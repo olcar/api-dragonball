@@ -18,6 +18,8 @@ import { Gender } from 'src/constants/gender';
 import { Race } from 'src/constants/race';
 import { Affiliation } from 'src/constants/affiliation';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { RolesGuard } from 'src/auth/guard/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 import {
   ApiExcludeEndpoint,
   ApiOkResponse,
@@ -37,7 +39,8 @@ import {
 export class CharactersController {
   constructor(private readonly charactersService: CharactersService) {}
   @ApiExcludeEndpoint()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin')
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   create(
@@ -147,7 +150,8 @@ export class CharactersController {
   }
 
   @ApiExcludeEndpoint()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin')
   @Patch(':id')
   @UseInterceptors(FileInterceptor('image'))
   update(
@@ -158,7 +162,8 @@ export class CharactersController {
     return this.charactersService.update(id, updateCharacterDto, image);
   }
   @ApiExcludeEndpoint()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin')
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.charactersService.remove(id);
