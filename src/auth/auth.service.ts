@@ -13,28 +13,25 @@ import * as bcrypt from 'bcryptjs';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userRepository: UsersService,
+    private readonly usersService: UsersService,
     private readonly jwt: JwtService,
   ) {}
 
   async register({ name, email, password }: RegisterDto) {
-    const user = await this.userRepository.findOneByEmail(email);
+    const user = await this.usersService.findOneByEmail(email);
 
     if (user) {
       throw new BadRequestException('Email already in use');
     }
-    const newUser = await this.userRepository.create({
+    return this.usersService.create({
       name,
       email,
       password: bcrypt.hashSync(password, 10),
     });
-    return Object.fromEntries(
-      Object.entries(newUser).filter(([key]) => key !== 'password'),
-    );
   }
 
   async login({ email, password }: LoginDto) {
-    const user = await this.userRepository.findOneByEmail(email);
+    const user = await this.usersService.findOneByEmail(email);
 
     if (!user) {
       throw new UnauthorizedException('Email is wrong');
@@ -46,6 +43,7 @@ export class AuthService {
     const payload = {
       sub: user.id,
       name: user.name,
+      role: user.role,
     };
     return { access_token: await this.jwt.signAsync(payload), user: user.name };
   }

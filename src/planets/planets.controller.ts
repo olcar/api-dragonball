@@ -15,6 +15,8 @@ import { PlanetsService } from './planets.service';
 import { CreatePlanetDTO, UpdatePlanetDTO } from './dto/planet.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { RolesGuard } from 'src/auth/guard/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 import {
   ApiBadGatewayResponse,
   ApiBadRequestResponse,
@@ -34,7 +36,8 @@ import {
 export class PlanetsController {
   constructor(private readonly planetsService: PlanetsService) {}
   @ApiExcludeEndpoint()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin')
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   create(@Body() createPlanetDto: CreatePlanetDTO, @UploadedFile() image) {
@@ -123,7 +126,8 @@ export class PlanetsController {
   }
 
   @ApiExcludeEndpoint()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin')
   @Patch(':id')
   @UseInterceptors(FileInterceptor('image'))
   update(
@@ -135,7 +139,8 @@ export class PlanetsController {
   }
 
   @ApiExcludeEndpoint()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin')
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.planetsService.remove(id);

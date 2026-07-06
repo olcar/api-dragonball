@@ -11,3 +11,13 @@ declare namespace NodeJS {
     CLOUDINARY_API_SECRET: string;
   }
 }
+
+declare namespace Express {
+  interface Request {
+    user?: {
+      sub: number;
+      name: string;
+      role: string;
+    };
+  }
+}

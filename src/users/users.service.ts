@@ -34,6 +34,10 @@ export class UsersService {
     return this.userRepository.update(id, user);
   }
 
+  countAdmins() {
+    return this.userRepository.count({ where: { role: 'admin' } });
+  }
+
   remove(id: number) {
     return this.userRepository.softDelete(id);
   }

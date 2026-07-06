@@ -55,7 +55,31 @@ Global prefix: `/api` — Docs at `/api-docs`
 
 ### Protected Endpoints (require `Authorization: Bearer <token>`)
 
-POST/PATCH/DELETE on all `/api/characters`, `/api/planets`, `/api/transformations`
+| Method | Path | Role | Description |
+|--------|------|------|-------------|
+| POST | `/api/characters` | admin | Create character |
+| PATCH | `/api/characters/:id` | admin | Update character |
+| DELETE | `/api/characters/:id` | admin | Delete character |
+| POST | `/api/planets` | admin | Create planet |
+| PATCH | `/api/planets/:id` | admin | Update planet |
+| DELETE | `/api/planets/:id` | admin | Delete planet |
+| POST | `/api/transformations` | admin | Create transformation |
+| PATCH | `/api/transformations/:id` | admin | Update transformation |
+| DELETE | `/api/transformations/:id` | admin | Delete transformation |
+| GET | `/api/users` | admin | List users |
+| GET | `/api/users/:id` | admin | Get user |
+| PATCH | `/api/users/:id/role` | admin | Change user role |
+| DELETE | `/api/users/:id` | admin | Delete user |
+
+### Admin Setup
+
+Register a user via `POST /api/auth/register`, then promote them to admin:
+
+```bash
+npm run seed:admin -- user@example.com
+```
+
+Users created via register get `role: user` by default.
 
 ## Scripts
 

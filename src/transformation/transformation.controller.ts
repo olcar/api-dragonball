@@ -17,6 +17,8 @@ import {
 } from './dto/transformation.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { RolesGuard } from 'src/auth/guard/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 import {
   ApiBadGatewayResponse,
   ApiBadRequestResponse,
@@ -35,7 +37,8 @@ import {
 export class TransformationController {
   constructor(private readonly transformationService: TransformationService) {}
   @ApiExcludeEndpoint()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin')
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   create(
@@ -90,7 +93,8 @@ export class TransformationController {
   }
 
   @ApiExcludeEndpoint()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin')
   @Patch(':id')
   @UseInterceptors(FileInterceptor('image'))
   update(
@@ -105,7 +109,8 @@ export class TransformationController {
     );
   }
   @ApiExcludeEndpoint()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('admin')
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.transformationService.remove(id);

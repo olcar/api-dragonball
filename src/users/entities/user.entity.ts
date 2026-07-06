@@ -1,4 +1,5 @@
-import { IUsers } from 'src/interfaces/users.interface';
+import { Exclude } from 'class-transformer';
+import { IUsers, UserRole } from 'src/interfaces/users.interface';
 import {
   Column,
   DeleteDateColumn,
@@ -17,8 +18,12 @@ export class User implements IUsers {
   @Column({ unique: true })
   email: string;
 
+  @Exclude()
   @Column()
   password: string;
+
+  @Column({ type: 'enum', enum: ['admin', 'user'], default: 'user' })
+  role: UserRole;
 
   @DeleteDateColumn()
   deleteAt: Date;
