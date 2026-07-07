@@ -28,9 +28,6 @@ export class AuthService {
       email,
       password: bcrypt.hashSync(password, 10),
     });
-    return Object.fromEntries(
-      Object.entries(newUser).filter(([key]) => key !== 'password'),
-    );
   }
 
   async login({ email, password }: LoginDto) {

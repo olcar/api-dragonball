@@ -1,0 +1,11 @@
+.git
+.gitignore
+node_modules
+dist
+coverage
+.env
+images/*
+!images/.gitkeep
+Dump*.sql
+.vscode
+*.md

@@ -10,26 +10,28 @@ REST API for Dragon Ball characters, planets, and transformations built with Nes
 - **Auth:** JWT (bcryptjs)
 - **Image Upload:** Cloudinary
 - **Docs:** Swagger (`/api-docs`)
-- **Testing:** Jest (28 unit tests, 4 e2e)
+- **Testing:** Jest (23 unit tests, 4 e2e)
 
 ## Setup
 
+### Local
+
 ```bash
-# 1. Copy env vars and fill them in
 cp .env.example .env
-
-# 2. Install
 npm install
-
-# 3. Start MySQL and create the database
 mysql -u root -e "CREATE DATABASE dragonball_api;"
-
-# 4. (optional) Import seed data
-mysql -u root dragonball_api < "Dump 04112023last.sql"
-
-# 5. Run
+mysql -u root dragonball_api < "Dump 04112023last.sql"  # optional seed data
 npm run start:dev
 ```
+
+### Docker
+
+```bash
+cp .env.example .env
+docker compose up -d
+```
+
+App at `http://localhost:3000`, MySQL on host port `3307`.
 
 ## API
 
@@ -80,4 +82,17 @@ npm run seed:admin -- user@example.com
 ```
 
 Users created via register get `role: user` by default.
-Node.js 20 is recommended. Node 26+ requires a patch to `buffer-equal-constant-time` (see `node_modules/`).
+
+## Scripts
+
+```bash
+npm run start:dev    # watch mode
+npm test             # 23 unit tests
+npm run test:e2e     # 4 e2e tests (requires MySQL)
+npm run lint         # eslint
+npm run build        # compile
+```
+
+## Node.js Compatibility
+
+Node.js 20 is required. Node 26+ needs a patch to `buffer-equal-constant-time` (see `node_modules/`).

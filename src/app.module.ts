@@ -1,7 +1,7 @@
 import { AuthModule } from './auth/auth.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { CharactersModule } from './characters/characters.module';
@@ -14,17 +14,18 @@ import { UsersModule } from './users/users.module';
   imports: [
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.MYSQL_HOST,
-      port: process.env.MYSQL_PORT,
-      username: process.env.MYSQL_USER,
-      password: process.env.MYSQL_PASSWORD,
-      database: process.env.MYSQL_DATABASE,
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      // TODO: synchronize drops and recreates tables on every restart.
-      // Replace with TypeORM migrations before deploying to production.
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      useFactory: (config: ConfigService) => ({
+        type: 'mysql',
+        host: config.get('MYSQL_HOST'),
+        port: +config.get('MYSQL_PORT'),
+        username: config.get('MYSQL_USER'),
+        password: config.get('MYSQL_PASSWORD'),
+        database: config.get('MYSQL_DATABASE'),
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: config.get('MYSQL_SYNCHRONIZE') === 'true',
+      }),
+      inject: [ConfigService],
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'images'),
