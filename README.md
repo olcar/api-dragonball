@@ -10,7 +10,7 @@ REST API for Dragon Ball characters, planets, and transformations built with Nes
 - **Auth:** JWT (bcryptjs)
 - **Image Upload:** Cloudinary
 - **Docs:** Swagger (`/api-docs`)
-- **Testing:** Jest (23 unit tests, 4 e2e)
+- **Testing:** Jest (28 unit tests, 4 e2e)
 
 ## Setup
 
@@ -86,13 +86,25 @@ Users created via register get `role: user` by default.
 ## Scripts
 
 ```bash
-npm run start:dev    # watch mode
-npm test             # 23 unit tests
-npm run test:e2e     # 4 e2e tests (requires MySQL)
-npm run lint         # eslint
-npm run build        # compile
+npm run start:dev       # watch mode
+npm test                # 28 unit tests
+npm run test:e2e        # 4 e2e tests (requires MySQL)
+npm run lint            # eslint
+npm run format          # prettier
+npm run build           # compile
+npm run seed:admin      # npm run seed:admin -- user@example.com
 ```
 
 ## Node.js Compatibility
 
-Node.js 20 is required. Node 26+ needs a patch to `buffer-equal-constant-time` (see `node_modules/`).
+Node.js 20 required.
+
+## Roadmap
+
+- [/] Docker dev environment with MySQL
+- [/] GitHub Actions CI
+- [ ] CI e2e tests with MySQL service container
+- [ ] Staging / production deployment
+- [ ] Rate limiting
+- [ ] API versioning (e.g., `/api/v1`)
+- [ ] OpenAPI 3.1 export
