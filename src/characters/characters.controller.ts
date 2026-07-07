@@ -21,7 +21,7 @@ import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import {
-  ApiExcludeEndpoint,
+  ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
   ApiQuery,
@@ -34,11 +34,12 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('Characters')
+@ApiBearerAuth()
 @ApiExtraModels(CreateCharacterDTO)
 @Controller('characters')
 export class CharactersController {
   constructor(private readonly charactersService: CharactersService) {}
-  @ApiExcludeEndpoint()
+  @ApiOperation({ summary: 'Create a new character (admin only)' })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('admin')
   @Post()
@@ -149,7 +150,7 @@ export class CharactersController {
     return this.charactersService.findOne(id);
   }
 
-  @ApiExcludeEndpoint()
+  @ApiOperation({ summary: 'Update a character (admin only)' })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('admin')
   @Patch(':id')
@@ -161,7 +162,7 @@ export class CharactersController {
   ) {
     return this.charactersService.update(id, updateCharacterDto, image);
   }
-  @ApiExcludeEndpoint()
+  @ApiOperation({ summary: 'Delete a character (admin only)' })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('admin')
   @Delete(':id')

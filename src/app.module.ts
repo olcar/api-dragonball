@@ -23,6 +23,8 @@ import { UsersModule } from './users/users.module';
         password: config.get('MYSQL_PASSWORD'),
         database: config.get('MYSQL_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        migrations: [__dirname + '/migrations/*{.ts,.js}'],
+        migrationsRun: true,
         synchronize: config.get('MYSQL_SYNCHRONIZE') === 'true',
       }),
       inject: [ConfigService],

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   ClassSerializerInterceptor,
   Controller,
@@ -12,34 +13,65 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { UsersService } from './users.service';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @ApiTags('users')
 @ApiBearerAuth()
-@UseGuards(AuthGuard, RolesGuard)
-@Roles('admin')
+@UseGuards(AuthGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiOkResponse({ description: 'Current user profile' })
+  @Get('me')
+  getProfile(@Req() req: Request) {
+    return this.usersService.findOne(req.user.sub);
+  }
+
+  @ApiOperation({ summary: 'Update current user profile' })
+  @Patch('me')
+  async updateProfile(@Req() req: Request, @Body() dto: UpdateProfileDto) {
+    if (dto.email) {
+      const existing = await this.usersService.findOneByEmail(dto.email);
+      if (existing && existing.id !== req.user.sub) {
+        throw new BadRequestException('Email already in use');
+      }
+    }
+    await this.usersService.update(req.user.sub, dto);
+    return this.usersService.findOne(req.user.sub);
+  }
+
+  @Roles('admin')
+  @UseGuards(RolesGuard)
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
 
+  @Roles('admin')
+  @UseGuards(RolesGuard)
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOne(id);
   }
 
-  @ApiExcludeEndpoint()
+  @ApiOperation({ summary: 'Change user role (admin only)' })
+  @Roles('admin')
+  @UseGuards(RolesGuard)
   @Patch(':id/role')
   async updateRole(
     @Req() req: Request,
@@ -56,7 +88,9 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @ApiExcludeEndpoint()
+  @ApiOperation({ summary: 'Delete a user (admin only)' })
+  @Roles('admin')
+  @UseGuards(RolesGuard)
   @Delete(':id')
   async remove(@Req() req: Request, @Param('id', ParseIntPipe) id: number) {
     if (req.user.sub === id) {

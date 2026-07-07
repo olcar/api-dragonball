@@ -40,7 +40,7 @@ describe('AuthService', () => {
   });
 
   describe('register', () => {
-    it('should create a user and return the entity (password stripped by serializer)', async () => {
+    it('should create a user and strip password from response', async () => {
       const dto = {
         name: 'Test User',
         email: 'test@test.com',
@@ -55,7 +55,7 @@ describe('AuthService', () => {
         'test@test.com',
       );
       expect(mockUsersService.create).toHaveBeenCalled();
-      expect(result).toHaveProperty('password');
+      expect(result).not.toHaveProperty('password');
       expect(result).toHaveProperty('email', 'test@test.com');
       expect(result).toHaveProperty('name', 'Test User');
     });

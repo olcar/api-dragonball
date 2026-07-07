@@ -22,7 +22,7 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import {
   ApiBadGatewayResponse,
   ApiBadRequestResponse,
-  ApiExcludeEndpoint,
+  ApiBearerAuth,
   ApiExtraModels,
   ApiInternalServerErrorResponse,
   ApiOkResponse,
@@ -32,11 +32,12 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('Transformations')
+@ApiBearerAuth()
 @ApiExtraModels(TransformationDTO)
 @Controller('transformations')
 export class TransformationController {
   constructor(private readonly transformationService: TransformationService) {}
-  @ApiExcludeEndpoint()
+  @ApiOperation({ summary: 'Create a new transformation (admin only)' })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('admin')
   @Post()
@@ -92,7 +93,7 @@ export class TransformationController {
     return this.transformationService.findOne(id);
   }
 
-  @ApiExcludeEndpoint()
+  @ApiOperation({ summary: 'Update a transformation (admin only)' })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('admin')
   @Patch(':id')
@@ -108,7 +109,7 @@ export class TransformationController {
       image,
     );
   }
-  @ApiExcludeEndpoint()
+  @ApiOperation({ summary: 'Delete a transformation (admin only)' })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('admin')
   @Delete(':id')

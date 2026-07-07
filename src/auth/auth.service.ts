@@ -23,11 +23,14 @@ export class AuthService {
     if (user) {
       throw new BadRequestException('Email already in use');
     }
-    return this.usersService.create({
+    const newUser = await this.usersService.create({
       name,
       email,
       password: bcrypt.hashSync(password, 10),
     });
+    const { password: pwd, ...safe } = newUser;
+    void pwd;
+    return safe;
   }
 
   async login({ email, password }: LoginDto) {

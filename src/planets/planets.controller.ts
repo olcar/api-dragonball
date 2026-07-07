@@ -20,7 +20,7 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import {
   ApiBadGatewayResponse,
   ApiBadRequestResponse,
-  ApiExcludeEndpoint,
+  ApiBearerAuth,
   ApiExtraModels,
   ApiInternalServerErrorResponse,
   ApiOkResponse,
@@ -32,10 +32,11 @@ import {
 
 @ApiTags('Planets')
 @ApiExtraModels(CreatePlanetDTO)
+@ApiBearerAuth()
 @Controller('planets')
 export class PlanetsController {
   constructor(private readonly planetsService: PlanetsService) {}
-  @ApiExcludeEndpoint()
+  @ApiOperation({ summary: 'Create a new planet (admin only)' })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('admin')
   @Post()
@@ -125,7 +126,7 @@ export class PlanetsController {
     return this.planetsService.findOne(id);
   }
 
-  @ApiExcludeEndpoint()
+  @ApiOperation({ summary: 'Update a planet (admin only)' })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('admin')
   @Patch(':id')
@@ -138,7 +139,7 @@ export class PlanetsController {
     return this.planetsService.update(id, updatePlanetDto, image);
   }
 
-  @ApiExcludeEndpoint()
+  @ApiOperation({ summary: 'Delete a planet (admin only)' })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('admin')
   @Delete(':id')

@@ -10,7 +10,7 @@ REST API for Dragon Ball characters, planets, and transformations built with Nes
 - **Auth:** JWT (bcryptjs)
 - **Image Upload:** Cloudinary
 - **Docs:** Swagger (`/api-docs`)
-- **Testing:** Jest (23 unit tests, 4 e2e)
+- **Testing:** Jest (28 unit tests, 22 e2e)
 
 ## Setup
 
@@ -55,6 +55,13 @@ Global prefix: `/api` — Docs at `/api-docs`
 | POST | `/api/auth/register` | `{name, email, password}` | User (no password hash) |
 | POST | `/api/auth/login` | `{email, password}` | `{access_token, user}` |
 
+### Self-Service Endpoints (require `Authorization: Bearer <token>`)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/users/me` | Current user profile |
+| PATCH | `/api/users/me` | Update own name, email, or password |
+
 ### Protected Endpoints (require `Authorization: Bearer <token>`)
 
 | Method | Path | Role | Description |
@@ -83,14 +90,29 @@ npm run seed:admin -- user@example.com
 
 Users created via register get `role: user` by default.
 
+## Migrations
+
+Schema changes are managed via TypeORM migrations:
+
+```bash
+npm run migration:generate   # Generate migration from entity changes
+npm run migration:run        # Apply pending migrations
+npm run migration:revert     # Revert last migration
+```
+
+The initial migration is applied automatically on app start (`migrationsRun: true`).
+
 ## Scripts
 
 ```bash
-npm run start:dev    # watch mode
-npm test             # 23 unit tests
-npm run test:e2e     # 4 e2e tests (requires MySQL)
-npm run lint         # eslint
-npm run build        # compile
+npm run start:dev       # watch mode
+npm run test            # 28 unit tests
+npm run test:e2e        # 22 e2e tests (requires MySQL)
+npm run lint            # eslint
+npm run format          # prettier
+npm run build           # compile
+npm run seed:admin      # Promote user to admin (usage: npm run seed:admin -- <email>)
+npm run migration:run   # Apply pending migrations
 ```
 
 ## Node.js Compatibility
