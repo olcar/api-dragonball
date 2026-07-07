@@ -10,5 +10,4 @@ export const CloudinaryProvider = {
       api_secret: process.env.CLOUDINARY_API_SECRET,
     });
   },
-  inject: [],
 };

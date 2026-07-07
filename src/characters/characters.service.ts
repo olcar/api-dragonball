@@ -96,7 +96,7 @@ export class CharactersService {
     }
 
     const { originPlanet: planetName, ...rest } = updateCharacterDto;
-    const updatedCharacter: any = {
+    const updatedCharacter: Partial<Character> = {
       ...rest,
       image: image ? result.secure_url : character.image,
     };
